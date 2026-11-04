@@ -11,6 +11,21 @@ jobs:
     name: validar proyecto
     runs-on: ubuntu-latest
 
+    # AQUÍ defines el servicio directamente, sin compose:
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: testdb
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        # Verificación para esperar a que MySQL termine de iniciar antes de correr los tests
+        options: >-
+          --health-cmd="mysqladmin ping -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
       - name: clonar repositorio
         uses: actions/checkout@v4
