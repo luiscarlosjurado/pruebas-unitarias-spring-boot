@@ -9,14 +9,14 @@ on:
 jobs:
   validacion:
     name: validar proyecto
-    runs-on: ubutu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: clonar repositorio
         uses: actions/checkout@v4
 
       - name: configurar JDK de java
-        uses: actions/setup-java@va4
+        uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "temurin"
