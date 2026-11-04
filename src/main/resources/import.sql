@@ -1,0 +1,8 @@
+-- INSERT INTO empleados (nombre, apellido, email) VALUES ('juan', 'perez', 'juan@gmail.com');
+-- INSERT INTO empleados (nombre, apellido, email) VALUES ('jose', 'perez', 'jose@gmail.com');
+-- INSERT INTO empleados (nombre, apellido, email) VALUES ('manuel', 'perez', 'manuel@gmail.com');
+-- INSERT INTO empleados (nombre, apellido, email) VALUES ('ana', 'perez', 'ana@gmail.com');
+-- INSERT INTO empleados (nombre, apellido, email) VALUES ('andres', 'perez', 'andres@gmail.com');
+-- INSERT INTO empleados (nombre, apellido, email) VALUES ('maria', 'perez', 'maria@gmail.com');
+-- INSERT INTO empleados (nombre, apellido, email) VALUES ('carlos', 'perez', 'carlos@gmail.com');
+-- INSERT INTO empleados (nombre, apellido, email) VALUES ('ayde', 'perez', 'ayde@gmail.com');

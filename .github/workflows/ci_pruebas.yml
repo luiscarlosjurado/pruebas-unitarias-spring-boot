@@ -1,0 +1,29 @@
+name: autmatizar pruebas
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validacion:
+    name: validar proyecto
+    runs-on: ubutu-latest
+
+    steps:
+      - name: clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: configurar JDK de java
+        uses: actions/setup-java@va4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: maven
+
+      - name: dar permisos de ejecucion
+        run: chmod +x mvnw
+
+      - name: ejecutar pruebas y validacion de codigo
+        run: ./mvnw clean verify
