@@ -3,6 +3,7 @@ package com.api.rest;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,14 +16,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Para ejecutar en orden
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EmpleadoE2ETest {
 
     @LocalServerPort
@@ -43,14 +45,14 @@ public class EmpleadoE2ETest {
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--window-size=1920,1080");
 
-        // 2. Aquí creamos el driver pasándole las opciones:
         driver = new ChromeDriver(options);
         baseUrl = "http://localhost:" + port + "/empleados";
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2)); // Espera si el navegador es lento
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
     }
 
-    //@AfterEach
+    @AfterEach // <-- Descomentado para que libere memoria y cierre el navegador
     void teardown() {
         if (driver != null) {
             driver.quit();
@@ -63,15 +65,18 @@ public class EmpleadoE2ETest {
     void testCrearEmpleado() {
         driver.get(baseUrl + "/nuevo");
 
-        // Thymeleaf genera IDs automáticamente basados en th:field
-        driver.findElement(By.id("nombre")).sendKeys("ninguno");
-        driver.findElement(By.id("apellido")).sendKeys("ninguno");
-        driver.findElement(By.id("email")).sendKeys("ninguno@gmail.com");
+        driver.findElement(By.id("nombre")).sendKeys("Carlos");
+        driver.findElement(By.id("apellido")).sendKeys("Jurado");
+        // CORREGIDO: Usamos el mismo email que verificamos abajo
+        driver.findElement(By.id("email")).sendKeys("carlos@gmail.com");
 
         // Clic en el botón Guardar
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-        // Verificar que volvimos a la lista y aparece el nuevo empleado
+        // Espera explícita a que cargue la lista con los datos nuevos
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(d -> d.findElement(By.tagName("body")).getText().contains("Carlos"));
+
         String bodyText = driver.findElement(By.tagName("body")).getText();
         assertTrue(bodyText.contains("Carlos"));
         assertTrue(bodyText.contains("carlos@gmail.com"));
@@ -83,19 +88,20 @@ public class EmpleadoE2ETest {
     void testEditarEmpleado() {
         driver.get(baseUrl);
 
-        // Buscar el botón 'Editar' del primer empleado en la tabla
         WebElement botonEditar = driver.findElement(By.linkText("Editar"));
         botonEditar.click();
 
-        // Modificar el nombre
         WebElement inputNombre = driver.findElement(By.id("nombre"));
         inputNombre.clear();
         inputNombre.sendKeys("Carlos Modificado");
 
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-        // Verificar cambio
-        assertTrue(driver.getPageSource().contains("Carlos Modificado"));
+        // CORREGIDO: Espera a que la página se actualice con el nuevo nombre
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        boolean actualizado = wait.until(d -> d.getPageSource().contains("Carlos Modificado"));
+
+        assertTrue(actualizado);
     }
 
     @Test
@@ -104,15 +110,16 @@ public class EmpleadoE2ETest {
     void testEliminarEmpleado() {
         driver.get(baseUrl);
 
-        // Clic en el botón Eliminar
         WebElement botonEliminar = driver.findElement(By.linkText("Eliminar"));
         botonEliminar.click();
 
-        // Manejar la alerta de JavaScript: onclick="return confirm('¿Estás seguro?')"
         Alert alert = driver.switchTo().alert();
-        alert.accept(); // Equivale a darle a "Aceptar"
+        alert.accept();
 
-        // Verificar que el texto ya no existe (asumiendo que era el único)
+        // Espera a que el texto desaparezca tras eliminar
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(d -> !d.findElement(By.tagName("body")).getText().contains("Carlos Modificado"));
+
         String bodyText = driver.findElement(By.tagName("body")).getText();
         assertTrue(!bodyText.contains("Carlos Modificado"));
     }
