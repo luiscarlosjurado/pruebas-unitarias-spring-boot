@@ -17,6 +17,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -37,7 +38,14 @@ public class EmpleadoE2ETest {
 
     @BeforeEach
     void setupTest() {
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--remote-allow-origins=*");
+
+        // 2. Aquí creamos el driver pasándole las opciones:
+        driver = new ChromeDriver(options);
         baseUrl = "http://localhost:" + port + "/empleados";
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2)); // Espera si el navegador es lento
     }
