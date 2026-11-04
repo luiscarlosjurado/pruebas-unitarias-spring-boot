@@ -15,10 +15,10 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: db_user_springboot    # <- Mismo nombre que en properties
-          MYSQL_USER: testuser                  # <- Agregamos este usuario
-          MYSQL_PASSWORD: luis1234              # <- Su contraseña
-          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: db_user_springboot
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: luis1234
+          MYSQL_ROOT_PASSWORD: luis1234 
         ports:
           - 3306:3306
         options: >-
