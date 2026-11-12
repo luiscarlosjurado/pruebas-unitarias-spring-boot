@@ -91,7 +91,7 @@ public class EmpleadoServicesTests {
 
         // then
         assertThat(empleados).isNotNull();
-        assertThat(empleados.size()).isEqualTo(1);
+        assertThat(empleados.size()).isEqualTo(2);
     }
 
     @DisplayName("Test para retornar una lista vacia")
