@@ -1,4 +1,4 @@
-name: autmatizar pruebas
+name: automatizar pruebas
 
 on:
   push:

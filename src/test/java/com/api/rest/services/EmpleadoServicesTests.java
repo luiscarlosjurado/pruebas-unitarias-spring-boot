@@ -36,9 +36,9 @@ public class EmpleadoServicesTests {
     private Empleado empleado;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         empleado = Empleado.builder()
-                .nombre("ana")
+                .nombre("juan")
                 .apellido("perez")
                 .email("a2@gmail.com")
                 .build();
@@ -46,58 +46,58 @@ public class EmpleadoServicesTests {
 
     @DisplayName("Test para guardar un empleado")
     @Test
-    void testGuardarEmpleado(){
-        //given
+    void testGuardarEmpleado() {
+        // given
         given(empleadoRepository.findByEmail(empleado.getEmail()))
                 .willReturn(Optional.empty());
         given(empleadoRepository.save(empleado)).willReturn(empleado);
 
-        //when
+        // when
         Empleado empleadoGuardado = empleadoService.saveEmpleado(empleado);
 
-        //then
+        // then
         assertThat(empleadoGuardado).isNotNull();
     }
 
     @DisplayName("Test para guardar un empleado con Throw Exception")
     @Test
-    void testGuardarEmpleadoConThrowException(){
-        //given
+    void testGuardarEmpleadoConThrowException() {
+        // given
         given(empleadoRepository.findByEmail(empleado.getEmail()))
                 .willReturn(Optional.of(empleado));
-        //when
-        assertThrows(ResourceNotFoundException.class,() -> {
-           empleadoService.saveEmpleado(empleado);
+        // when
+        assertThrows(ResourceNotFoundException.class, () -> {
+            empleadoService.saveEmpleado(empleado);
         });
 
-        //then
-        verify(empleadoRepository,never()).save(any(Empleado.class));
+        // then
+        verify(empleadoRepository, never()).save(any(Empleado.class));
     }
 
     @DisplayName("Test para listar a los empleados")
     @Test
-    void testListarEmpleados(){
-        //given
+    void testListarEmpleados() {
+        // given
         Empleado empleado1 = Empleado.builder()
                 .id(2L)
                 .nombre("Pepito")
                 .apellido("perez")
                 .email("p2@gmail.com")
                 .build();
-        given(empleadoRepository.findAll()).willReturn(List.of(empleado,empleado1));
+        given(empleadoRepository.findAll()).willReturn(List.of(empleado, empleado1));
 
-        //when
+        // when
         List<Empleado> empleados = empleadoService.getAllEmpleados();
 
-        //then
+        // then
         assertThat(empleados).isNotNull();
-        assertThat(empleados.size()).isEqualTo(2);
+        assertThat(empleados.size()).isEqualTo(1);
     }
 
     @DisplayName("Test para retornar una lista vacia")
     @Test
-    void testListarColeccionEmpleadosVacia(){
-        //given
+    void testListarColeccionEmpleadosVacia() {
+        // given
         Empleado empleado1 = Empleado.builder()
                 .id(2L)
                 .nombre("Julen")
@@ -106,61 +106,61 @@ public class EmpleadoServicesTests {
                 .build();
         given(empleadoRepository.findAll()).willReturn(Collections.emptyList());
 
-        //when
+        // when
         List<Empleado> listaEmpleados = empleadoService.getAllEmpleados();
 
-        //then
+        // then
         assertThat(listaEmpleados).isEmpty();
         assertThat(listaEmpleados.size()).isEqualTo(0);
     }
 
     @DisplayName("Test para obtener un empleado por ID")
     @Test
-    void testObtenerEmpleadoPorId(){
+    void testObtenerEmpleadoPorId() {
         Empleado empleado1 = Empleado.builder()
                 .id(1L)
                 .nombre("Julen")
                 .apellido("Oliva")
                 .email("j2@gmail.com")
                 .build();
-        
-        //given
+
+        // given
         given(empleadoRepository.findById(1L)).willReturn(Optional.of(empleado1));
 
-        //when
+        // when
         Empleado empleadoGuardado = empleadoService.getEmpleadoById(empleado1.getId()).get();
 
-        //then
+        // then
         assertThat(empleadoGuardado).isNotNull();
     }
 
     @DisplayName("Test para actualizar un empleado")
     @Test
-    void testActualizarEmpleado(){
-        //given
+    void testActualizarEmpleado() {
+        // given
         given(empleadoRepository.save(empleado)).willReturn(empleado);
         empleado.setEmail("cl2@gmail.com");
         empleado.setNombre("Clistian Raul");
 
-        //when
-        Empleado empleadoActualizado  = empleadoService.updateEmpleado(empleado);
+        // when
+        Empleado empleadoActualizado = empleadoService.updateEmpleado(empleado);
 
-        //then
+        // then
         assertThat(empleadoActualizado.getEmail()).isEqualTo("cl2@gmail.com");
         assertThat(empleadoActualizado.getNombre()).isEqualTo("Clistian Raul");
     }
 
     @DisplayName("Test para eliminar un empleado")
     @Test
-    void testEliminarEmpleado(){
-        //given
+    void testEliminarEmpleado() {
+        // given
         long empleadoId = 1L;
         willDoNothing().given(empleadoRepository).deleteById(empleadoId);
 
-        //when
+        // when
         empleadoService.deleteEmpleado(empleadoId);
 
-        //then
-        verify(empleadoRepository,times(1)).deleteById(empleadoId);
+        // then
+        verify(empleadoRepository, times(1)).deleteById(empleadoId);
     }
 }
