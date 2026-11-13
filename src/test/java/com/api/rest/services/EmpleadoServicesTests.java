@@ -140,7 +140,7 @@ public class EmpleadoServicesTests {
     void testActualizarEmpleado() {
         // given
         given(empleadoRepository.save(empleado)).willReturn(empleado);
-        empleado.setEmail("cl@gmail.com");
+        empleado.setEmail("cl2@gmail.com");
         empleado.setNombre("Clistian Raul");
 
         // when
