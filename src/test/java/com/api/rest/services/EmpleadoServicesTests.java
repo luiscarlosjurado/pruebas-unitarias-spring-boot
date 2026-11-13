@@ -33,6 +33,7 @@ public class EmpleadoServicesTests {
     @InjectMocks
     private EmpleadoServiceImpl empleadoService;
 
+    
     private Empleado empleado;
 
     @BeforeEach
@@ -139,7 +140,7 @@ public class EmpleadoServicesTests {
     void testActualizarEmpleado() {
         // given
         given(empleadoRepository.save(empleado)).willReturn(empleado);
-        empleado.setEmail("cl2@gmail.com");
+        empleado.setEmail("cl@gmail.com");
         empleado.setNombre("Clistian Raul");
 
         // when
